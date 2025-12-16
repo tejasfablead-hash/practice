@@ -4,17 +4,18 @@
 <div class="content">
     <div class="m-4">
 
-        <h3>Add Data</h3>
+        <h3>Update Data</h3>
         <br>
         <div id="message" style="color: green;"></div>
         <br>
 
-        <form id="submitform"  enctype="multipart/form-data">
+        <form id="submitform" enctype="multipart/form-data">
             @csrf
             <div class="mb-3 row">
+                <input type="hidden" name="id" value="{{$single->id}}" class="form-control">
                 <label for="staticEmail" class="col-sm-2 col-form-label">Name</label>
                 <div class="col-sm-6">
-                    <input type="text" name="name" class="form-control">
+                    <input type="text" name="name" value="{{$single->name}}" class="form-control">
                     @error('name')
                     <p class="text-danger">{{$message}}</p>
                     @enderror
@@ -23,7 +24,7 @@
             <div class="mb-3 row">
                 <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
                 <div class="col-sm-6">
-                    <input type="email" name="email" class="form-control">
+                    <input type="email" name="email" value="{{$single->email}}" class="form-control">
                     @error('email')
                     <p class="text-danger">{{$message}}</p>
                     @enderror
@@ -33,19 +34,22 @@
             <div class="mb-3 row">
                 <label for="inputPassword" class="col-sm-2 col-form-label">Address</label>
                 <div class="col-sm-6">
-                    <input type="text" name="address" class="form-control">
+                    <input type="text" name="address" value="{{$single->address}}" class="form-control">
                     @error('address')
                     <p class="text-danger">{{$message}}</p>
                     @enderror
                 </div>
             </div>
+
+
             <div class="mb-3 row">
                 <label for="inputPassword" class="col-sm-2 col-form-label">Country</label>
                 <div class="col-sm-6">
                     <select class="form-control" name="country" id="country">
+
                         <option class="form-control" value="">Select....</option>
                         @foreach($country as $item)
-                        <option class="form-control" value="{{$item->id}}">{{$item->country_name}}</option>
+                        <option class="form-control" value="{{$item->id}}" {{ (isset($single) && $single->country == $item->id) ? 'selected' : '' }}>{{$item->country_name}}</option>
                         @endforeach
                     </select>
                     @error('country')
@@ -57,22 +61,20 @@
                 <label for="inputPassword" class="col-sm-2 col-form-label">City</label>
                 <div class="col-sm-6">
                     <select class="form-control" name="city" id="city">
-                        <option class="form-control" value="">Select City....</option>
+                        <option class="form-control" value="{{$single->city}}" >Select City....</option>
                     </select>
+
                     @error('city')
                     <p class="text-danger">{{$message}}</p>
                     @enderror
                 </div>
             </div>
-
             <div class="mb-3 row">
                 <label for="inputPassword" class="col-sm-2 col-form-label">Gender</label>
                 <div class="col-sm-6">
                     <select class="form-control" name="gender" id="">
-
-                        <option class="form-control" value="">Select....</option>
-                        <option class="form-control" value="male">Male</option>
-                        <option class="form-control" value="female">Female</option>
+                        <option class="form-control" value="male" {{ $single->gender === 'male' ? 'selected' : '' }}>Male</option>
+                        <option class="form-control" value="female" {{ $single->gender === 'female' ? 'selected' : '' }}>Female</option>
                     </select>
                     @error('gender')
                     <p class="text-danger">{{$message}}</p>
@@ -82,7 +84,9 @@
             <div class="mb-3 row">
                 <label for="" class="col-sm-2 col-form-label">Image</label>
                 <div class="col-sm-6">
-                    <input type="file" name="image" class="form-control">
+                    <input type="file" name="image" class="form-control" ><br>
+
+                    <img src="{{asset('/storage/upload/'.$single->image)}}" alt="img" height="50px" width="50x">
                     @error('image')
                     <p class="text-danger">{{$message}}</p>
                     @enderror
@@ -91,10 +95,11 @@
             <div class="mb-3 row">
                 <label for="inputPassword" class="col-sm-2 col-form-label"></label>
                 <div class="col-sm-2">
-                    <button type="submit" class="btn btn-primary form-control">Submit</button>
+                    <button type="submit" class="btn btn-primary form-control">Update</button>
                 </div>
             </div>
         </form>
+
     </div>
     <br>
     <br>
@@ -108,47 +113,22 @@
 <script>
     $(document).ready(function() {
 
-
-        $('#country').on('change', function() {
-
-            var country_id = $(this).val();
-            if (country_id) {
-                $.ajax({
-                    url: '{{url("/getcity/")}}/' + country_id,
-                    type:'GET',
-                    dataType:'json',
-                    success:function(response){
-                        $('#city').empty();
-                        $.each(response,function(key,value){
-                            $('#city').append('<option value="' + key + '">' + value + '</option>');
-                        });
-                    }
-                });
-            }else{
-                 $('#city').empty().append('<option value=" "> select city </option>');
-
-            }
-        });
-
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
-
-
-
         $('#submitform').submit(function(e) {
+
 
             e.preventDefault();
             var Data = $('#submitform')[0];
 
             var formData = new FormData(Data);
 
-            //  console.log(formData);
             $.ajax({
-                url: "{{ route('store') }}",
+                url: "{{ route('update') }}",
                 method: 'POST',
                 data: formData,
                 contentType: false,
@@ -161,29 +141,61 @@
                     // view();
                 },
                 error: function(xhr, status, error) {
-                    // if(xhr.responseJSON && xhr.responseJSON.errors){
-                           
-                    //         $.each(xhr.responseJSON.error(message,key)){
-                    //             <span class="" name=" '+ key +' "> +message+<span>
-                    //         }
-                    // }
-                 
                     console.log('error : ', error);
                 }
             });
 
         });
 
+
+        $('#country').on('change', function() {
+
+            var country_id = $(this).val();
+            var city_id = $('#city').val();
+            if (country_id) {
+                $.ajax({
+                    url: '{{url("/getcity/")}}/' + country_id,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        $('#city').empty();
+                        $.each(response, function(key, value) {
+                            var isSelected = (key == city_id) ? 'selected' : '';
+                            $('#city').append('<option value="' + key + '" ' + isSelected + '>' + value + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#city').empty().append('<option value=" "> select city </option>');
+
+            }
+        });
+
+    });
+
+    document.addEventListener("DOMContentLoaded", function(e) {
+        var country_id = $('#country').val();
+        var city_id = $('#city').val();
+        if (country_id) {
+            $.ajax({
+                url: '{{url("/getcity/")}}/' + country_id,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    $('#city').empty();
+                    $.each(response, function(key, value) {
+                        var isSelected = (key == city_id) ? 'selected' : '';
+                        $('#city').append('<option value="' + key + '" ' + isSelected + '>' + value + '</option>');
+
+                    });
+                }
+            });
+        } else {
+            $('#city').empty().append('<option value=" "> select city </option>');
+
+        }
     });
 </script>
-
-
-<script>
-    $(document).ready(function() {
-        $('#myTable').DataTable();
-    });
-</script>
-
 
 
 @endsection
