@@ -2,37 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CITY;
+use App\Models\COUNTRY;
 use App\Models\emp;
+use Illuminate\Container\Attributes\Storage;
 use Illuminate\Http\Request;
 
 class ManageController extends Controller
 {
-    
+
     public function view()
     {
         $data  = emp::all();
-       return view('view',['data'=>$data]); 
+        $city = CITY::all();
+        return view('view', ['data' => $data, 'city' => $city]);
     }
-    // public function display()
-    // {
-    //     $data  = emp::all();
-
-    //    return response()->json([
-    //         'status' => 'success',
-    //         'data' => $data
-    //     ]); 
-    // }
+    public function display()
+    {
+        $data  = emp::with(['getcountry', 'getcity'])->get();
+        // dd($data);
+        return response()->json([
+            'status' => 'success',
+            'data' => $data
+        ]);
+    }
 
 
     public function main()
     {
-        return view('form');
+        $country = COUNTRY::all();
+        return view('form', ['country' => $country]);
     }
 
     public function store(Request $request)
     {
+
         // dd($request->all());
-        $request->validate([
+        $validate = $request->validate([
             'name' => 'required',
             'email' => 'required|email',
             'address' => 'required',
@@ -41,7 +47,8 @@ class ManageController extends Controller
             'gender' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif'
         ]);
-    
+
+       
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -61,7 +68,79 @@ class ManageController extends Controller
         ]);
         return response()->json([
             'status' => 'success',
-            'message' => 'Data Inserted'
+            'message' => 'Data Inserted',
+
         ]);
+    }
+
+    public function edit($id)
+    {
+        $country = COUNTRY::all();
+        $single = emp::where('id', $id)->first();
+        return view('update', ['single' => $single, 'country' => $country]);
+    }
+
+
+    public function updatedata(Request $request)
+    {
+
+        $updatedata = emp::findOrFail($request->id);
+
+        // $newimage = $updatedata->image;
+        // dd($request->all());
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'address' => 'required',
+            'city' => 'required',
+            'country' => 'required',
+            'gender' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif'
+        ]);
+
+
+
+        if ($request->hasFile('image')) {
+            // if ($updatedata->image) {
+            //     Storage::disk('public')->delete('upload/' . $updatedata->image);
+            // }
+            $file = $request->file('image');
+            $filename = time() . "." . $file->getClientOriginalExtension();
+            $file->storeAs('upload', $filename, 'public');
+            $newimage = $filename;
+        }
+
+        $updatedata->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'address' => $request->address,
+            'city' => $request->city,
+            'country' => $request->country,
+            'gender' => $request->gender,
+            'image' => $newimage
+        ]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data Updated'
+        ]);
+    }
+
+    public function delete($id)
+    {
+        $delete = emp::where('id', $id)->first();
+        $delete->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Data deleted'
+        ]);
+    }
+
+    public function filter($country_id)
+    {
+
+        $city = CITY::where('country_id', $country_id)->pluck('city_name', 'id');
+
+        // dd($city);
+        return response()->json($city);
     }
 }
