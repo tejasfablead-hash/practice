@@ -7,13 +7,14 @@ use App\Models\COUNTRY;
 use App\Models\emp;
 use Illuminate\Container\Attributes\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ManageController extends Controller
 {
 
     public function view()
     {
-        $data  = emp::all();
+        $data  = emp::with(['getcountry', 'getcity'])->get();
         $city = CITY::all();
         return view('view', ['data' => $data, 'city' => $city]);
     }
@@ -38,16 +39,22 @@ class ManageController extends Controller
     {
 
         // dd($request->all());
-        $validate = $request->validate([
+        $validate =  Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:emp_tbl,email',
             'address' => 'required',
-            'city' => 'required',
-            'country' => 'required',
+            'city' => 'required|string',
+            'country' => 'required|string',
             'gender' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif'
         ]);
 
+        if($validate->fails()){
+            return response()->json([
+                'status'=>'false',
+                'errors'=>$validate->errors()
+            ],422);
+        }
        
 
         if ($request->hasFile('image')) {
@@ -55,7 +62,6 @@ class ManageController extends Controller
             $filename = time() . "." . $file->getClientOriginalExtension();
             $file->storeAs('upload', $filename, 'public');
         }
-
 
         emp::create([
             'name' => $request->name,
@@ -86,18 +92,24 @@ class ManageController extends Controller
 
         $updatedata = emp::findOrFail($request->id);
 
-        // $newimage = $updatedata->image;
+        $newimage = $updatedata->image;
         // dd($request->all());
-        $request->validate([
+       $validate =  Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email',
             'address' => 'required',
-            'city' => 'required',
-            'country' => 'required',
+            'city' => 'required|string',
+            'country' => 'required|string',
             'gender' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif'
+            'image' => 'image|mimes:jpeg,png,jpg,gif'
         ]);
 
+        if($validate->fails()){
+            return response()->json([
+                'status'=>'false',
+                'errors'=>$validate->errors()
+            ],422);
+        }
 
 
         if ($request->hasFile('image')) {

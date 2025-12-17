@@ -44,9 +44,10 @@
 
     /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
     div.content {
-      margin-left: 200px;
-      padding: 1px 16px;
+      margin-left: 150px;
+      padding: 2px 16px;
       height: 1000px;
+      width: 90%;
     }
 
     /* On screens that are less than 700px wide, make the sidebar into a topbar */

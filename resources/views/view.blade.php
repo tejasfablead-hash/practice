@@ -2,11 +2,11 @@
 @section('container')
 <div class="content">
 
-    <div class="m-3">
+    <div class="m-5">
 
         <h3>Manage Data</h3>
         <br>
-        <div class="m-1">
+        <div class="">
             <table id="myTable" class="display">
                 <thead>
                     <tr>
@@ -98,14 +98,14 @@
         $(document).on('click', '.del-btn', function(e) {
 
             let id = $(this).data('id');
-
+            let obj = $(this);
             if (confirm("Are you sure you want to delete this record?")) {
                 $.ajax({
                     url: "/delete/" + id,
                     method: 'GET',
                     success: function(response) {
                         console.log(response);
-                        window.open('/view', '__self');
+                        $(obj).parent().parent().remove();
                     },
                     error: function(xhr, status, error) {
                         console.log('error : ', error);
