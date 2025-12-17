@@ -2,31 +2,28 @@
 @section('container')
 
 <div class="content">
-    <div class="m-4">
+    <div class="m-5">
 
         <h3>Add Data</h3>
         <br>
         <div id="message" style="color: green;"></div>
         <br>
 
-        <form id="submitform"  enctype="multipart/form-data">
+        <form id="submitform" enctype="multipart/form-data">
             @csrf
             <div class="mb-3 row">
                 <label for="staticEmail" class="col-sm-2 col-form-label">Name</label>
                 <div class="col-sm-6">
-                    <input type="text" name="name" class="form-control">
-                    @error('name')
-                    <p class="text-danger">{{$message}}</p>
-                    @enderror
+                    <input type="text" name="name" id="name" class="form-control">
+                    <span class="error text-danger" id="name_error"></span>
+
                 </div>
             </div>
             <div class="mb-3 row">
                 <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
                 <div class="col-sm-6">
-                    <input type="email" name="email" class="form-control">
-                    @error('email')
-                    <p class="text-danger">{{$message}}</p>
-                    @enderror
+                    <input type="email" name="email" id="email" class="form-control">
+                    <span class="error text-danger" id="email_error"></span>
                 </div>
 
             </div>
@@ -34,9 +31,7 @@
                 <label for="inputPassword" class="col-sm-2 col-form-label">Address</label>
                 <div class="col-sm-6">
                     <input type="text" name="address" class="form-control">
-                    @error('address')
-                    <p class="text-danger">{{$message}}</p>
-                    @enderror
+                    <span class="error text-danger" id="address_error"></span>
                 </div>
             </div>
             <div class="mb-3 row">
@@ -48,9 +43,7 @@
                         <option class="form-control" value="{{$item->id}}">{{$item->country_name}}</option>
                         @endforeach
                     </select>
-                    @error('country')
-                    <p class="text-danger">{{$message}}</p>
-                    @enderror
+                    <span class="error text-danger" id="country_error"></span>
                 </div>
             </div>
             <div class="mb-3 row">
@@ -59,9 +52,7 @@
                     <select class="form-control" name="city" id="city">
                         <option class="form-control" value="">Select City....</option>
                     </select>
-                    @error('city')
-                    <p class="text-danger">{{$message}}</p>
-                    @enderror
+                    <span class="error text-danger" id="city_error"></span>
                 </div>
             </div>
 
@@ -74,18 +65,14 @@
                         <option class="form-control" value="male">Male</option>
                         <option class="form-control" value="female">Female</option>
                     </select>
-                    @error('gender')
-                    <p class="text-danger">{{$message}}</p>
-                    @enderror
+                    <span class="error text-danger" id="gender_error"></span>
                 </div>
             </div>
             <div class="mb-3 row">
                 <label for="" class="col-sm-2 col-form-label">Image</label>
                 <div class="col-sm-6">
                     <input type="file" name="image" class="form-control">
-                    @error('image')
-                    <p class="text-danger">{{$message}}</p>
-                    @enderror
+                    <span class="error text-danger" id="image_error"></span>
                 </div>
             </div>
             <div class="mb-3 row">
@@ -115,20 +102,21 @@
             if (country_id) {
                 $.ajax({
                     url: '{{url("/getcity/")}}/' + country_id,
-                    type:'GET',
-                    dataType:'json',
-                    success:function(response){
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
                         $('#city').empty();
-                        $.each(response,function(key,value){
+                        $.each(response, function(key, value) {
                             $('#city').append('<option value="' + key + '">' + value + '</option>');
                         });
                     }
                 });
-            }else{
-                 $('#city').empty().append('<option value=" "> select city </option>');
+            } else {
+                $('#city').empty().append('<option value=" "> select city </option>');
 
             }
         });
+
 
         $.ajaxSetup({
             headers: {
@@ -137,16 +125,14 @@
         });
 
 
-
-
         $('#submitform').submit(function(e) {
 
             e.preventDefault();
             var Data = $('#submitform')[0];
 
             var formData = new FormData(Data);
+            $('._error').text('');
 
-            //  console.log(formData);
             $.ajax({
                 url: "{{ route('store') }}",
                 method: 'POST',
@@ -155,35 +141,31 @@
                 processData: false,
                 success: function(response) {
                     console.log(response);
-                    $('#message').html(response.message)
+
+                    $('#message').html(response.message);
                     $('#submitform')[0].reset();
                     window.open('/view', '__self');
                     // view();
                 },
                 error: function(xhr, status, error) {
-                    // if(xhr.responseJSON && xhr.responseJSON.errors){
-                           
-                    //         $.each(xhr.responseJSON.error(message,key)){
-                    //             <span class="" name=" '+ key +' "> +message+<span>
-                    //         }
-                    // }
-                 
+                    $(".error").empty();
+                    if (xhr.status === 422) {
+                        $(".error").addClass("text-danger");
+                        let errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            $('#' + key + '_error').text(value);
+                        });
+
+                    }
                     console.log('error : ', error);
                 }
+
             });
 
         });
 
     });
 </script>
-
-
-<script>
-    $(document).ready(function() {
-        $('#myTable').DataTable();
-    });
-</script>
-
 
 
 @endsection
