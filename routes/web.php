@@ -17,7 +17,12 @@ Route::get('/view', function () {
 
 Route::post('/save-register', [AuthController::class, 'store'])->name('RegisterPage');
 Route::post('/save-login', [AuthController::class, 'login'])->name('LoginPage');
+Route::post('userlogout', [AuthController::class, 'userlogout'])->name('userlogout');
 
+Route::get('/profile', [AuthController::class, 'profile'])->name('Profile');
+Route::get('/edit-profile/{id}', [AuthController::class, 'edit'])->name('EditProfile');
+
+Route::post('/update-profile', [AuthController::class, 'updatedata'])->name('UpdateProfile');
 
 Route::get('/getcity/{country_id}', [ManageController::class, 'filter']);
 Route::get('/view', [ManageController::class, 'view'])->name('view');

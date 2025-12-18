@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\CITY;
 use App\Models\COUNTRY;
 use App\Models\emp;
-use Illuminate\Container\Attributes\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ManageController extends Controller
@@ -14,69 +15,84 @@ class ManageController extends Controller
 
     public function view()
     {
-        $data  = emp::with(['getcountry', 'getcity'])->get();
-        $city = CITY::all();
-        return view('view', ['data' => $data, 'city' => $city]);
+        if (Auth::check()) {
+            $data  = emp::with(['getcountry', 'getcity'])->get();
+            $city = CITY::all();
+            return view('view', ['data' => $data, 'city' => $city]);
+        } else {
+            return view('login');
+        }
     }
     public function display()
     {
-        $data  = emp::with(['getcountry', 'getcity'])->get();
-        // dd($data);
-        return response()->json([
-            'status' => 'success',
-            'data' => $data
-        ]);
+        if (Auth::check()) {
+            $data  = emp::with(['getcountry', 'getcity'])->get();
+            // dd($data);
+            return response()->json([
+                'status' => 'success',
+                'data' => $data
+            ]);
+        } else {
+            return view('login');
+        }
     }
 
 
     public function main()
     {
-        $country = COUNTRY::all();
-        return view('form', ['country' => $country]);
+        if (Auth::check()) {
+            $country = COUNTRY::all();
+            return view('form', ['country' => $country]);
+        } else {
+            return view('login');
+        }
     }
 
     public function store(Request $request)
     {
 
         // dd($request->all());
-        $validate =  Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:emp_tbl,email',
-            'address' => 'required',
-            'city' => 'required|string',
-            'country' => 'required|string',
-            'gender' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif'
-        ]);
+        if (Auth::check()) {
+            $validate =  Validator::make($request->all(), [
+                'name' => 'required',
+                'email' => 'required|email|unique:emp_tbl,email',
+                'address' => 'required',
+                'city' => 'required|string',
+                'country' => 'required|string',
+                'gender' => 'required',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif'
+            ]);
 
-        if($validate->fails()){
+
+            if ($validate->fails()) {
+                return response()->json([
+                    'status' => 'false',
+                    'errors' => $validate->errors()
+                ], 422);
+            }
+
+
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $filename = time() . "." . $file->getClientOriginalExtension();
+                $file->storeAs('upload', $filename, 'public');
+            }
+
+            emp::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'address' => $request->address,
+                'city' => $request->city,
+                'country' => $request->country,
+                'gender' => $request->gender,
+                'image' => $filename
+            ]);
             return response()->json([
-                'status'=>'false',
-                'errors'=>$validate->errors()
-            ],422);
+                'status' => 'success',
+                'message' => 'Data Inserted',
+
+            ]);
         }
-       
-
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . "." . $file->getClientOriginalExtension();
-            $file->storeAs('upload', $filename, 'public');
-        }
-
-        emp::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'address' => $request->address,
-            'city' => $request->city,
-            'country' => $request->country,
-            'gender' => $request->gender,
-            'image' => $filename
-        ]);
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data Inserted',
-
-        ]);
     }
 
     public function edit($id)
@@ -90,11 +106,11 @@ class ManageController extends Controller
     public function updatedata(Request $request)
     {
 
-        $updatedata = emp::findOrFail($request->id);
+        $updatedata = emp::where('id', $request->id)->first();
 
         $newimage = $updatedata->image;
         // dd($request->all());
-       $validate =  Validator::make($request->all(), [
+        $validate =  Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email',
             'address' => 'required',
@@ -104,18 +120,16 @@ class ManageController extends Controller
             'image' => 'image|mimes:jpeg,png,jpg,gif'
         ]);
 
-        if($validate->fails()){
+        if ($validate->fails()) {
             return response()->json([
-                'status'=>'false',
-                'errors'=>$validate->errors()
-            ],422);
+                'status' => 'false',
+                'errors' => $validate->errors()
+            ], 422);
         }
 
 
         if ($request->hasFile('image')) {
-            // if ($updatedata->image) {
-            //     Storage::disk('public')->delete('upload/' . $updatedata->image);
-            // }
+            Storage::disk('public')->delete('upload/' . $updatedata->image);
             $file = $request->file('image');
             $filename = time() . "." . $file->getClientOriginalExtension();
             $file->storeAs('upload', $filename, 'public');
