@@ -52,7 +52,7 @@
           <form method="post" id="loginform">
             @csrf
             <div data-mdb-input-init class="form-outline mb-4">
-              <input type="email" name="email" id="email"  value="{{ old('email') }}" class="form-control form-control-lg"
+              <input type="email" name="email" id="email" value="{{ old('email') }}" class="form-control form-control-lg"
                 placeholder="Enter a valid email address" />
               <span class="error text-danger" id="email_error"></span>
             </div>
@@ -64,7 +64,7 @@
               <span class="error text-danger" id="password_error"></span>
             </div>
 
-            <p id="invalid" class=" text-danger  mx-3 mb-0"></p>
+            <p id="invalid" class=" text-danger   mb-0"></p>
 
             <div class="text-center text-lg-start mt-4 pt-2">
               <button type="submit" name="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
@@ -77,53 +77,38 @@
         </div>
       </div>
     </div>
-    
+
   </section>
   <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-
+  <script src="{{ asset('ajax.js') }}"></script>
   <script>
     $(document).ready(function() {
 
-      $.ajaxSetup({
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-      });
       $('#loginform').submit(function(e) {
         e.preventDefault();
         var form = $('#loginform')[0];
         var formData = new FormData(form);
         $('._error').text('');
-        $.ajax({
-          url: "{{ route('LoginPage') }}",
-          method: 'POST',
-          data: formData,
-          processData: false,
-          contentType: false,
-          success: function(response) {
+        var url = "{{ route('LoginPage') }}";
+
+        makeAjaxRequest(url, 'POST', formData, function(response) {
             console.log('response', response);
             if (response.status == true) {
-              window.open('/profile', '__self');
+              $('#message').html(response.message)
+               setTimeout(function() {
+                        window.location.href = "/profile";
+                    }, 2000);
             } else {
               $('#invalid').html(response.message);
             }
             $('#loginform')[0].reset();
 
           },
-          error: function(xhr, status, error) {
-            $(".error").empty();
-
-            if (xhr.status === 422) {
-              $(".error").addClass("text-danger");
-              let errors = xhr.responseJSON.errors;
-              $.each(errors, function(key, value) {
-                $('#' + key + '_error').text(value);
-              });
-            }
+          function(error) {
             console.log('error : ', error);
           }
-        });
+        );
 
       });
 

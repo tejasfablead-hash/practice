@@ -2,115 +2,104 @@
 @section('container')
 <div class="content">
 
-    <div class="m-5">
-
-        <h3>Manage Data</h3>
-        <br>
-        <div class="">
-            <table id="myTable" class="display">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>NAME</th>
-                        <th>EMAIL</th>
-                        <th>ADDRESS</th>
-                        <th>CITY</th>
-                        <th>COUNTRY</th>
-                        <th>GENDER</th>
-                        <th>IMAGE</th>
-                        <th>ACTION</th>
-                    </tr>
-                </thead>
-                <tbody id="data-tbl">
-
-                </tbody>
-            </table>
+    <div class="container-fluid py-4">
+        <div id="message" class="text-success"></div>
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold text-dark">Manage Data</h5>
+                <a href="{{route('form')}}" class="btn btn-primary btn-sm shadow-sm">
+                    <i class="bi bi-plus-lg me-1"></i> Add New Record
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="myTable" class="display table  table-hover align-middle w-100">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>City</th>
+                                <th>Country</th>
+                                <th>Gender</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-tbl">
+                            <!-- AJAX Data will load here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
-
+<script src="{{ asset('ajax.js') }}"></script>
 <script>
     $(document).ready(function() {
+        var url = "{{ route('display') }}";
+        makeAjaxRequest(url, 'GET', null, function(response) {
+            if (response.status === 'success') {
+                var result = response.data;
+                console.log('all data:', result);
+                var op = "";
+                var count = 1;
 
-        view();
+                if ($.fn.DataTable.isDataTable('#myTable')) {
+                    $('#myTable').DataTable().clear().destroy();
+                }
 
-        // $.ajaxSetup({
-        //     headers: {
-        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //     }
-        // });
-
-        function view() {
-            $.ajax({
-                url: "{{ route('display') }}",
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        var result = response.data;
-                        console.log(result);
-                        var op = "";
-                        var count = 1;
-                        $.each(response.data, function(index, row) {
-                            op += `<tr>
+                $.each(result, function(index, row) {
+                    op += `<tr>
                             <td>${count++}</td>
-                            <td>${row.name}</td>
+                            <td class="text-capitalize">
+                                <img src="/storage/upload/${row.image}" height="30" width="30"> 
+                             ${row.name}</td>
                             <td>${row.email}</td>
-                            <td>${row.address}</td>
-                            <td>${row.getcity.city_name}</td>
-                            <td>${row.getcountry.country_name}</td>
-                            <td>${row.gender}</td>
-                            <td>
-                                <img src="/storage/upload/${row.image}" height="20" width="20">
-                            </td>
-                            <td>
+                            <td class="text-capitalize">${row.getcity.city_name}</td>
+                            <td class="text-capitalize">${row.getcountry.country_name}</td>
+                            <td class="text-capitalize">${row.gender}</td>
+                            <td class="text-capitalize">
                                 <a href="/edit/${row.id}" class="edit-btn btn btn-sm btn-success">edit</a> 
                                  <a href="#" class="del-btn btn btn-danger btn-sm" data-id="${row.id}">delete</a>
                             </td>
                         </tr>`;
-                        });
-
-                        $('#data-tbl').html(op);
+                });
+                $('#data-tbl').html(op);
+                
+                $('#myTable').DataTable({
+                    "pageLength": 10,
+                    "responsive": true,
+                    "destroy": true, // Safety flag
+                    "language": {
+                        "search": "_INPUT_",
+                        "searchPlaceholder": "Search records..."
                     }
-
-                },
-                error: function(xhr, status, error) {
-                    console.log('error : ', error);
-                }
-            })
-        }
-
-
-    });
-</script>
-<script>
-    $(document).ready(function() {
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                });
             }
+        }, function(error) {
+            console.log('error : ', error);
         });
 
         $(document).on('click', '.del-btn', function(e) {
 
             let id = $(this).data('id');
             let obj = $(this);
+            var url = "/delete/" + id;
             if (confirm("Are you sure you want to delete this record?")) {
-                $.ajax({
-                    url: "/delete/" + id,
-                    method: 'GET',
-                    success: function(response) {
+                makeAjaxRequest(url, 'GET', null, function(response) {
                         console.log(response);
+                        $('#message').html(response.message)
                         $(obj).parent().parent().remove();
                     },
-                    error: function(xhr, status, error) {
+                    function(error) {
                         console.log('error : ', error);
                     }
-                });
+                );
             }
         });
     });

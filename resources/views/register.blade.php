@@ -39,18 +39,18 @@
         </div>
         <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
           <div class="fw-bold text-success mx-3 mb-0 d-flex align-items-center text-center my-4" id="message">
-           
+
           </div>
           <div class="divider d-flex align-items-center my-4">
             <p class="text-center fw-bold mx-3 mb-0">Registration</p>
           </div>
-          <form id="cmxform"  enctype="multipart/form-data">
+          <form id="cmxform" enctype="multipart/form-data">
             @csrf
             <!-- Name input -->
             <div data-mdb-input-init class="form-outline mb-4">
               <input type="text" name="name" class="form-control form-control-lg"
                 placeholder="Enter a valid username" />
-             <span class="error text-danger" id="name_error"></span>
+              <span class="error text-danger" id="name_error"></span>
 
             </div>
             <!-- Email input -->
@@ -75,7 +75,7 @@
 
             <div data-mdb-input-init class="form-outline mb-4">
               <input type="file" name="image" class="form-control form-control-lg" />
-            <span class="error text-danger" id="image_error"></span>
+              <span class="error text-danger" id="image_error"></span>
             </div>
 
             <div class="text-center text-lg-start mt-4 pt-2">
@@ -90,51 +90,32 @@
         </div>
       </div>
     </div>
-  
+
   </section>
   <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-
+  <script src="{{ asset('ajax.js') }}"></script>
   <script>
     $(document).ready(function() {
-
-      $.ajaxSetup({
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-      });
-
+      
       $('#cmxform').submit(function(e) {
-
         e.preventDefault();
         var form = $('#cmxform')[0];
         var formData = new FormData(form);
-         $('._error').text('');
-        $.ajax({
-          url: "{{ route('RegisterPage') }}",
-          method: 'POST',
-          data: formData,
-          processData: false,
-          contentType: false,
-          success: function(response) {
+        $('._error').text('');
+        var url = "{{ route('RegisterPage') }}";
+
+        makeAjaxRequest(url, 'POST', formData, function(response) {
             console.log('response', response);
             $('#message').html(response.message);
             $('#cmxform')[0].reset();
             window.open('/', '__self');
           },
-           error: function(xhr, status, error) {
-                    $(".error").empty();
-                    if (xhr.status === 422) {
-                        $(".error").addClass("text-danger");
-                        let errors = xhr.responseJSON.errors;
-                        $.each(errors, function(key, value) {
-                            $('#' + key + '_error').text(value);
-                        });
-                    }
-                    console.log('error : ', error);
-                }
-        });
-
+          function(error) {
+            console.log('error : ', error);
+          }
+        );
+       
       });
 
     });
