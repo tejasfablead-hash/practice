@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Login;
 use App\Models\User;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
@@ -19,9 +18,9 @@ class AuthController extends Controller
         // dd($request->all());
         $validate = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required|email|unique:login_tbl,email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'phone' => 'required|numeric',
+            'phone' => 'required|numeric|digits:10',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif'
         ]);
 
@@ -32,14 +31,14 @@ class AuthController extends Controller
                 'errors' => $validate->errors()
             ], 422);
         }
-
+       
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = time() . "." . $file->getClientOriginalExtension();
             $file->storeAs('user', $filename, 'public');
         }
-
+        
         User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -55,39 +54,31 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-       
+
         $validate = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|min:6',
         ]);
 
         // dd($validate);
-          if ($validate->fails()) {
-                return response()->json([
-                    'status' => 'false',
-                    'errors' => $validate->errors()
-                ], 422);
-            }
+        if ($validate->fails()) {
+            return response()->json([
+                'status' => 'false',
+                'errors' => $validate->errors()
+            ], 422);
+        }
 
-        // if (Auth::attempt($request->only('email', 'password'))) {
-           
-        //     return response()->json([
-        //         'status' => true,
-        //         'message' => 'login Successfully',
-        //     ]);
-        // }
 
-       $credentials =  $request->only('email', 'password');
+        $credentials =  $request->only('email', 'password');
 
-          if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            // Redirect to intended page or home
-         return response()->json([
+            return response()->json([
                 'status' => true,
                 'message' => 'login Successfully',
             ]);
         }
- 
+
         return response()->json([
             'status' => "false",
             'message' => 'Invalid email or password'
@@ -96,15 +87,15 @@ class AuthController extends Controller
 
     public function userlogout(Request $request)
     {
-          Auth::logout();
-          $request->session()->regenerateToken();
-          return response()->json([
-              'status' => true,
-              'message' => 'You are logout'
-          ]);
-      }
+        Auth::logout();
+        $request->session()->regenerateToken();
+        return response()->json([
+            'status' => true,
+            'message' => 'You are logout'
+        ]);
+    }
 
-    
+
 
     public function profile()
     {
@@ -131,7 +122,7 @@ class AuthController extends Controller
         $validate =  Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email',
-            'phone' => 'required',
+            'phone' => 'required|numeric|digits:10',
             'image' => 'image|mimes:jpeg,png,jpg,gif'
         ]);
 
@@ -161,7 +152,7 @@ class AuthController extends Controller
         ]);
         return response()->json([
             'status' => 'success',
-            'message' => 'Data Updated'
+            'message' => 'Your Profile Updated Successfully'
         ]);
     }
 }

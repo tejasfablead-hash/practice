@@ -89,7 +89,7 @@ class ManageController extends Controller
             ]);
             return response()->json([
                 'status' => 'success',
-                'message' => 'Data Inserted',
+                'message' => 'Data Inserted successfully',
 
             ]);
         }
@@ -147,18 +147,20 @@ class ManageController extends Controller
         ]);
         return response()->json([
             'status' => 'success',
-            'message' => 'Data Updated'
+            'message' => ' Data Updated Successfully'
         ]);
     }
 
     public function delete($id)
     {
         $delete = emp::where('id', $id)->first();
-        $delete->delete();
-        return response()->json([
-            'success' => true,
-            'message' => 'Data deleted'
-        ]);
+        $delete->image;
+            Storage::disk('public')->delete('upload/' . $delete->image);
+            $delete->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Record Deleted Successfully'
+            ]);
     }
 
     public function filter($country_id)

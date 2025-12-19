@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ManageController;
 use Illuminate\Support\Facades\Route;
+use Termwind\Components\Raw;
 
 Route::get('/', function () {
     return view('login');
@@ -32,3 +33,7 @@ Route::post('/store', [ManageController::class, 'store'])->name('store');
 Route::get('/edit/{id}', [ManageController::class, 'edit'])->name('edit');
 Route::post('/update', [ManageController::class, 'updatedata'])->name('update');
 Route::get('/delete/{id}', [ManageController::class, 'delete'])->name('delete');
+
+
+
+
