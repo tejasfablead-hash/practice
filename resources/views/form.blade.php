@@ -2,9 +2,19 @@
 @section('container')
 
 <div class="content">
-    <div class="m-5">
+    <div class="m-3">
 
-    <div class="container mt-5">
+      <div class="row">
+            <div class="col">
+                <nav aria-label="breadcrumb" class="bg-white rounded-3 shadow-sm p-3 mb-4 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-muted">User Add Form Overview</h5>
+                    <a href="{{route('view')}}" class="btn btn-outline-secondary btn-sm">
+                   Back
+                    </a>
+                </nav>
+            </div>
+        </div>
+    <div class="container mt-3">
         <div id="message" class="text-success"></div>
     <div class="row justify-content-center">
         <div class="col-md-12 border p-4 shadow-sm rounded bg-white">
@@ -109,6 +119,7 @@
                     dataType: 'json',
                     success: function(response) {
                         $('#city').empty();
+                        console.log('city',response);
                         $.each(response, function(key, value) {
                             $('#city').append('<option value="' + key + '">' + value + '</option>');
                         });
@@ -129,6 +140,7 @@
             makeAjaxRequest( url,'POST', formData, function(response) {
                     $('#message').html(response.message);
                     $('#submitform')[0].reset();
+                       $(".error").empty();
                     setTimeout(function() {
                         window.location.href = "/view";
                     }, 2000);

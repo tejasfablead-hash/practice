@@ -70,7 +70,7 @@
                         </tr>`;
                 });
                 $('#data-tbl').html(op);
-                
+
                 $('#myTable').DataTable({
                     "pageLength": 10,
                     "responsive": true,
@@ -93,7 +93,10 @@
             if (confirm("Are you sure you want to delete this record?")) {
                 makeAjaxRequest(url, 'GET', null, function(response) {
                         console.log(response);
-                        $('#message').html(response.message)
+                        $('#message').html(response.message);
+                        setTimeout(function() {
+                            $('#message').hide();
+                        }, 2000);
                         $(obj).parent().parent().remove();
                     },
                     function(error) {

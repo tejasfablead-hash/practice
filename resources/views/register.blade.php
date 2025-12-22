@@ -33,54 +33,88 @@
   <section class="vh-100">
     <div class="container-fluid h-custom">
       <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-md-9 col-lg-6 col-xl-5">
+        <div class="col-md-9 col-lg-3 col-xl-4">
           <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
             class="img-fluid" alt="Sample image">
         </div>
-        <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+        <div class="col-md-8 col-lg-9 col-xl-6 offset-xl-1">
           <div class="fw-bold text-success mx-3 mb-0 d-flex align-items-center text-center my-4" id="message">
-
           </div>
-          <div class="divider d-flex align-items-center my-4">
+          <div class="divider d-flex align-items-center my-4 ">
             <p class="text-center fw-bold mx-3 mb-0">Registration</p>
           </div>
           <form id="cmxform" enctype="multipart/form-data">
             @csrf
             <!-- Name input -->
-            <div data-mdb-input-init class="form-outline mb-4">
-              <input type="text" name="name" class="form-control form-control-lg"
-                placeholder="Enter a valid username" />
-              <span class="error text-danger" id="name_error"></span>
-
-            </div>
-            <!-- Email input -->
-            <div data-mdb-input-init class="form-outline mb-4">
-              <input type="email" name="email" class="form-control form-control-lg"
-                placeholder="Enter a valid email address" />
-              <span class="error text-danger" id="email_error"></span>
-            </div>
-
-            <!-- Password input -->
-            <div data-mdb-input-init class="form-outline mb-3">
-              <input type="password" name="password" class="form-control form-control-lg"
-                placeholder="Enter password" />
-              <span class="error text-danger" id="password_error"></span>
-            </div>
-
-            <div data-mdb-input-init class="form-outline mb-4">
-              <input type="text" name="phone" class="form-control form-control-lg"
-                placeholder="Enter a valid phonenumber" />
-              <span class="error text-danger" id="phone_error"></span>
+            <div class="row">
+              <div class="col-md-6">
+                <div data-mdb-input-init class="form-outline mb-4 d-flex row ">
+                  <div class="col-md-0"> <label class="form-label">Name :</label></div>
+                  <div class="col-md-12"><input type="text" name="name" class="form-control form-control-lg"
+                      placeholder="Enter a valid username" />
+                    <span class="error text-danger" id="name_error"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6"> <!-- Email input -->
+                <div data-mdb-input-init class="form-outline mb-4 d-flex row ">
+                  <div class="col-md-0"> <label class="form-label">Email :</label> </div>
+                  <div class="col-md-12"> <input type="email" name="email" class="form-control form-control-lg"
+                      placeholder="Enter a valid email address" />
+                    <span class="error text-danger" id="email_error"></span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div data-mdb-input-init class="form-outline mb-4">
-              <input type="file" name="image" class="form-control form-control-lg" />
-              <span class="error text-danger" id="image_error"></span>
+            <div class="row">
+              <div class="col-md-6">
+                <!-- Password input -->
+                <div data-mdb-input-init class="form-outline mb-3 d-flex row">
+                  <div class="col-md-0"> <label class="form-label">Password :</label> </div>
+                  <div class="col-md-12"><input type="password" name="password" class="form-control form-control-lg"
+                      placeholder="Enter password" />
+                    <span class="error text-danger" id="password_error"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <!--Confirm  Password input -->
+                <div data-mdb-input-init class="form-outline mb-3 d-flex row">
+                  <div class="col-md-0"> <label class="form-label">Confirm Password :</label> </div>
+                  <div class="col-md-12"><input type="password" name="password_confirmation" id="password-confirm" class="form-control form-control-lg"
+                      placeholder="Enter confirm password" />
+                    <span class="error text-danger" id="password_error"></span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div class="text-center text-lg-start mt-4 pt-2">
-              <input type="submit" name="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
-                style="padding-left: 2.5rem; padding-right: 2.5rem;" value="Register" />
+            <div class="row">
+              <div class="col-md-6">
+                <div data-mdb-input-init class="form-outline mb-3 d-flex row">
+                  <div class="col-md-0"> <label class="form-label">Mobile :</label> </div>
+                  <div class="col-md-12"><input type="text" name="phone" class="form-control form-control-lg"
+                      placeholder="Enter a valid phonenumber" />
+                    <span class="error text-danger" id="phone_error"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div data-mdb-input-init class="form-outline mb-3 d-flex row">
+                  <div class="col-md-0"><label class="form-label">Image :</label> </div>
+                  <div class="col-md-12"> <input type="file" name="image" class="form-control form-control-lg" />
+                    <span class="error text-danger" id="image_error"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center text-lg-start  d-flex row">
+              <div class="col-md-0"><label class="form-label-lg"></label> </div>
+              <div class="col-md-12"><input type="submit" name="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
+                  style="padding-left: 2.5rem; padding-right: 2.5rem;" value="Register" />
+              </div>
             </div>
 
           </form>
@@ -97,7 +131,7 @@
   <script src="{{ asset('ajax.js') }}"></script>
   <script>
     $(document).ready(function() {
-      
+
       $('#cmxform').submit(function(e) {
         e.preventDefault();
         var form = $('#cmxform')[0];
@@ -115,7 +149,7 @@
             console.log('error : ', error);
           }
         );
-       
+
       });
 
     });

@@ -138,31 +138,6 @@
                 }
             );
 
-            // $.ajax({
-            //     url: "{{ route('UpdateProfile') }}",
-            //     method: 'POST',
-            //     data: formData,
-            //     contentType: false,
-            //     processData: false,
-            //     success: function(response) {
-            //         console.log(response);
-            //         $('#message').html(response.message)
-            //         window.open('/profile', '__self');
-            //         // view();
-            //     },
-            //     error: function(xhr, status, error) {
-            //         console.log('error : ', error);
-            //         $(".error").removeClass("text-danger").empty();
-            //         if (xhr.status === 422) {
-            //             $(".error").addClass("text-danger");
-            //             let errors = xhr.responseJSON.errors;
-            //             $.each(error, function(key, value) {
-            //                 $('#' + key + '_error').text(value);
-            //             });
-            //         }
-            //     }
-            // });
-
         });
     });
 </script>

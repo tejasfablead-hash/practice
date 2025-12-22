@@ -51,24 +51,30 @@
           </div>
           <form method="post" id="loginform">
             @csrf
-            <div data-mdb-input-init class="form-outline mb-4">
-              <input type="email" name="email" id="email" value="{{ old('email') }}" class="form-control form-control-lg"
-                placeholder="Enter a valid email address" />
-              <span class="error text-danger" id="email_error"></span>
-            </div>
 
             <!-- Password input -->
-            <div data-mdb-input-init class="form-outline mb-3">
-              <input type="password" name="password" id="password" class="form-control form-control-lg"
-                placeholder="Enter password" />
-              <span class="error text-danger" id="password_error"></span>
+               <div data-mdb-input-init class="form-outline mb-4 d-flex ">
+              <div class="col-md-3"> <label class="form-label">Email :</label> </div>
+              <div class="col-md-9"> <input type="email" value="{{ old('email') }}" name="email" class="form-control form-control-lg"
+                  placeholder="Enter a valid email address" />
+                <span class="error text-danger" id="email_error"></span>
+              </div>
             </div>
-
+            <!-- Password input -->
+            <div data-mdb-input-init class="form-outline mb-3 d-flex ">
+              <div class="col-md-3"> <label class="form-label">Password :</label> </div>
+              <div class="col-md-9"><input type="password" name="password" class="form-control form-control-lg"
+                  placeholder="Enter password" />
+                <span class="error text-danger" id="password_error"></span>
+              </div>
+            </div>
             <p id="invalid" class=" text-danger   mb-0"></p>
-
-            <div class="text-center text-lg-start mt-4 pt-2">
-              <button type="submit" name="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
-                style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+                <div class="text-center text-lg-start mt-2 pt-2 d-flex">
+              <div class="col-md-3"><label class="form-label-lg"></label> </div>
+               <div class="col-md-9"><input type="submit" name="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
+                style="padding-left: 2.5rem; padding-right: 2.5rem;" value="Login" />
+            </div>
+            </div>
               <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account ? <a href="{{route('register')}}"
                   class="link-danger">Register</a></p>
             </div>

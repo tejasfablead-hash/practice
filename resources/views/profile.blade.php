@@ -2,7 +2,7 @@
 @section('container')
 <div class="content">
 
-    <div class="m-5">
+    <div class="m-2">
         <section style="background-color: #f8f9fa;">
     <div class="container py-2">
         

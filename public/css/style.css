@@ -1,14 +1,17 @@
 .sidebar {
     margin: 0;
     padding: 10px;
-    width: 20%; /* Slightly wider for better breathing room */
-    background-color: #ffffff; /* Modern white background */
+    width: 15%;
+    /* Slightly wider for better breathing room */
+    background-color: #ffffff;
+    /* Modern white background */
     position: fixed;
     height: 100%;
     overflow: auto;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.05); /* Soft shadow */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+    /* Soft shadow */
     border-right: 1px solid #e9ecef;
-     overflow-y: auto;
+    overflow-y: auto;
 }
 
 /* Sidebar Branding */
@@ -24,10 +27,12 @@
 .sidebar a {
     display: flex;
     align-items: center;
-    color: #495057; /* Dark grey text */
+    color: #495057;
+    /* Dark grey text */
     padding: 12px 15px;
     text-decoration: none;
-    border-radius: 8px; /* Rounded buttons look better in 2025 */
+    border-radius: 8px;
+    /* Rounded buttons look better in 2025 */
     margin-bottom: 5px;
     transition: all 0.3s ease;
 }
@@ -40,7 +45,8 @@
 
 /* Active link */
 .sidebar a.active {
-    background-color: #0d6efd; /* Modern Blue */
+    background-color: #0d6efd;
+    /* Modern Blue */
     color: white;
 }
 
@@ -52,14 +58,17 @@
 
 /* Adjusted Content Area */
 div.content {
-    margin-left: 290px; /* Matches sidebar width */
+    margin-left: 210px;
+    /* Exactly matches sidebar width */
     padding: 25px;
     background-color: #f8f9fa;
     min-height: 100vh;
-    position: fixed;
-    width: 80%;
-    
+    /* Ensures background covers full height */
+    /* REMOVED: position: fixed */
+    /* REMOVED: width: 85% */
+    /* overflow-y: scroll */
 }
+
 
 /* Responsive Mobile Layout */
 @media screen and (max-width: 700px) {
@@ -70,11 +79,44 @@ div.content {
         border-right: none;
         border-bottom: 1px solid #e9ecef;
     }
+
     .sidebar a {
         float: left;
         margin: 5px;
     }
+
     div.content {
         margin-left: 0;
     }
+}
+
+.sidebar a {
+    padding: 10px 15px;
+    display: block;
+    text-decoration: none;
+    color: #333;
+}
+
+/* Rotate arrow when open */
+.sidebar .dropdown-toggle::after {
+    display: inline-block;
+    margin-left: .255em;
+    vertical-align: .255em;
+    content: "";
+    border-top: .3em solid;
+    border-right: .3em solid transparent;
+    border-bottom: 0;
+    border-left: .3em solid transparent;
+    /* float: right; */
+    margin-top: 10px;
+    transition: transform 0.2s;
+}
+
+.sidebar .dropdown-toggle.collapsed::after {
+    transform: rotate(-90deg);
+}
+
+.sidebar .active {
+    background-color: #505255;
+    color: rgb(233, 56, 56) !important;
 }

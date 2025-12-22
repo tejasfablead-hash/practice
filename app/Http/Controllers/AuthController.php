@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -19,7 +20,7 @@ class AuthController extends Controller
         $validate = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
+            'password' => 'required|min:6|confirmed',
             'phone' => 'required|numeric|digits:10',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif'
         ]);
@@ -31,14 +32,14 @@ class AuthController extends Controller
                 'errors' => $validate->errors()
             ], 422);
         }
-       
+
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = time() . "." . $file->getClientOriginalExtension();
             $file->storeAs('user', $filename, 'public');
         }
-        
+
         User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -121,7 +122,11 @@ class AuthController extends Controller
         // dd($request->all());
         $validate =  Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->ignore($updatedata->id)
+            ],
             'phone' => 'required|numeric|digits:10',
             'image' => 'image|mimes:jpeg,png,jpg,gif'
         ]);
