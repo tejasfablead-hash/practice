@@ -1,21 +1,28 @@
 <!-- The sidebar -->
-<link rel="stylesheet" href="cdn.jsdelivr.net">
 
 <div class="sidebar">
-  
-    
-    <!-- Link 1: Profile -->
-    <a href="{{route('Profile')}}" class="{{ request()->routeIs('Profile') ? 'active' : '' }}">
-        <i class="bi bi-person-circle"></i> Profile View
+    <!-- User Dropdown Menu -->
+    <a href="#userSubmenu" 
+       data-bs-toggle="collapse" 
+       aria-expanded="{{ request()->routeIs('user.*') ? 'true' : 'false' }}" 
+       class="dropdown-toggle {{ request()->routeIs('user.*') ? '' : 'collapsed' }}">
+        <i class="bi bi-people"></i> User Management
     </a>
     
-    <!-- Link 2: Add User -->
-    <a href="{{route('form')}}" class="{{ request()->routeIs('form') ? 'active' : '' }}">
-        <i class="bi bi-person-plus"></i> Add User
-    </a>
-    
-    <!-- Link 3: View Details -->
-    <a href="{{route('view')}}" class="{{ request()->routeIs('view') ? 'active' : '' }}">
-        <i class="bi bi-list-columns-reverse"></i> View Details
-    </a>
+    <div class="collapse {{ request()->routeIs('user.*') ? 'show' : '' }}" id="userSubmenu">
+        <ul class="nav flex-column ms-3">
+            <li class="nav-item">
+                <a href="{{route('form')}}" 
+                   class="nav-link {{ request()->routeIs('user.add') ? 'active' : '' }}">
+                    <i class="bi bi-person-plus"></i> Add User
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{route('view')}}" 
+                   class="nav-link {{ request()->routeIs('user.view') ? 'active' : '' }}">
+                    <i class="bi bi-list-columns-reverse"></i> All Users
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>

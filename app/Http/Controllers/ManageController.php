@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ManageController extends Controller
 {
@@ -112,12 +113,17 @@ class ManageController extends Controller
         // dd($request->all());
         $validate =  Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('emp_tbl')->ignore($updatedata->id)
+            ],
             'address' => 'required',
             'city' => 'required|string',
             'country' => 'required|string',
             'gender' => 'required',
             'image' => 'image|mimes:jpeg,png,jpg,gif'
+
         ]);
 
         if ($validate->fails()) {
@@ -155,12 +161,12 @@ class ManageController extends Controller
     {
         $delete = emp::where('id', $id)->first();
         $delete->image;
-            Storage::disk('public')->delete('upload/' . $delete->image);
-            $delete->delete();
-            return response()->json([
-                'success' => true,
-                'message' => 'Record Deleted Successfully'
-            ]);
+        Storage::disk('public')->delete('upload/' . $delete->image);
+        $delete->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Record Deleted Successfully'
+        ]);
     }
 
     public function filter($country_id)

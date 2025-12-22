@@ -2,8 +2,18 @@
 @section('container')
 
 <div class="content">
-    <div class="m-5">
-        <div class="container mt-5">
+    <div class="m-3">
+           <div class="row">
+            <div class="col">
+                <nav aria-label="breadcrumb" class="bg-white rounded-3 shadow-sm p-3 mb-4 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-muted">User Update Form Overview</h5>
+                    <a href="{{route('view')}}" class="btn btn-outline-secondary btn-sm">
+                   Back
+                    </a>
+                </nav>
+            </div>
+        </div>
+        <div class="container mt-3">
             <div id="message" class="text-success"></div>
             <div class="row justify-content-center">
                 <div class="col-md-12 border p-4 shadow-sm rounded bg-white">
@@ -27,7 +37,7 @@
                             <!-- Email Input -->
                             <div class="col-6 mb-3">
                                 <label class="form-label">Email</label>
-                                <input type="email" name="email" id="email" value="{{$single->email}}" class="form-control" placeholder="name@example.com">
+                                <input type="email" name="email" id="email" value="{{$single->email}}"  class="form-control" placeholder="name@example.com">
                                 <span class="text-danger small error" id="email_error"></span>
                             </div>
                         </div>
@@ -110,7 +120,7 @@
                 var Data = $('#submitform')[0];
                 var formData = new FormData(Data);
                 var url = "{{ route('update') }}";
-                $('._error').text();
+                $('._error').text('');
 
                 makeAjaxRequest(url, 'POST', formData, function(response) {
                         console.log(response);
@@ -122,6 +132,7 @@
                     },
                     function(error) {
                         console.log('error : ', error);
+                 
                     }
                 );
 
