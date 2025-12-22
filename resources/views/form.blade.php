@@ -1,6 +1,8 @@
 @extends('layout')
 @section('container')
-
+<style>
+    
+</style>
 <div class="content">
     <div class="m-3">
 
