@@ -21,88 +21,111 @@
                 <!-- Message Alert -->
                 <div id="message" class="text text-success mb-4 "></div>
 
+
+
+
+
                 <div class="row">
                     <!-- Left Side: Current Image Card -->
                     <div class="col-lg-4">
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-header bg-white py-3">
-                                <h6 class="mb-0 fw-bold">Profile Picture</h6>
-                            </div>
-                            <div class="card-body text-center">
-                                <img src="{{asset('/storage/user/'.$single->image)}}"
-                                    alt="avatar"
-                                    class="rounded-circle img-fluid shadow-sm mb-3"
-                                    style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #eee;">
-                                <p class="text-muted small">Current Avatar</p>
+                        <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 1.25rem;">
+                            <!-- Decorative Top Banner -->
+                            <div class="bg-primary" style="height: 100px; background: linear-gradient(45deg, #4e73df 0%, #224abe 100%);"></div>
+
+                            <div class="card-body text-center pt-0">
+                                <div class="mt-n5 position-relative">
+                                    <img src="{{asset('/storage/user/'.$single->image)}}"
+                                        alt="avatar"
+                                        class="rounded-circle img-fluid border border-4 border-white shadow-sm"
+                                        style="width: 120px; height: 120px; object-fit: cover; margin-top: -60px;">
+                                </div>
+
+                                <h5 class="mt-3 mb-1 text-capitalize fw-bold">{{$single->name}}</h5>
+                                <p class="text-muted small mb-4">
+                                    <i class="bi bi-geo-alt-fill me-1"></i> Registered User
+                                </p>
+
+                                <div class="border-top pt-3 mt-3">
+                                    <div class="row">
+                                        <div class="col-6 border-end">
+                                            <h6 class="mb-0 fw-bold">Joined</h6>
+                                            <span class="text-muted small">{{ $single->created_at->format('M Y') }}</span>
+                                        </div>
+                                        <div class="col-6">
+                                            <h6 class="mb-0 fw-bold">Status</h6>
+                                            <span class="badge bg-success-soft text-success rounded-pill">Active</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Right Side: Edit Form Card -->
                     <div class="col-lg-8">
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-header bg-white py-3">
-                                <h6 class="mb-0 fw-bold">Account Settings</h6>
+
+                        <div class="card border-0 shadow-sm" style="border-radius: 1.25rem;">
+                            <div class="card-header bg-white py-3 border-0 mt-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-shape bg-primary-soft text-primary rounded-3 me-3 p-2">
+                                        <i class="bi bi-person-lines-fill fs-4"></i>
+                                    </div>
+                                    <h5 class="mb-0 fw-bold">Account Overview</h5>
+                                </div>
                             </div>
-                            <div class="card-body p-4">
-                                <form id="updateform" enctype="multipart/form-data">
-                                    @csrf
-                                    <input type="hidden" name="id" id="id" value="{{$single->id}}">
 
-                                    <!-- Name Row -->
-                                    <div class="row mb-3 align-items-center">
-                                        <label class="col-sm-3 col-form-label fw-bold text-secondary">Full Name</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" name="name" value="{{$single->name}}" class="form-control" placeholder="Enter name">
-                                            <span class="error text-danger small" id="name_error"></span>
+                            <form id="updateform" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="id" id="id" value="{{$single->id}}">
+                                <div class="card-body px-4 pb-4">
+                                    <div class="row g-4">
+                                        <!-- Full Name -->
+                                        <div class="col-md-6">
+                                            <div class="p-3 border rounded-3 bg-light-subtle">
+                                                <label class="text-muted small text-uppercase fw-bold mb-1 d-block">Full Name</label>
+                                                <input type="text" name="name" value="{{$single->name}}" class="form-control" placeholder="Enter name">
+                                                <span class="error text-danger small" id="name_error"></span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Email Address -->
+                                        <div class="col-md-6">
+                                            <div class="p-3 border rounded-3 bg-light-subtle">
+                                                <label class="text-muted small text-uppercase fw-bold mb-1 d-block">Email Address</label>
+                                                <input type="email" name="email" value="{{$single->email}}" class="form-control" placeholder="example@mail.com">
+                                                <span class="error text-danger small" id="email_error"></span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Phone Number -->
+                                        <div class="col-md-6">
+                                            <div class="p-3 border rounded-3 bg-light-subtle">
+                                                <label class="text-muted small text-uppercase fw-bold mb-1 d-block">Phone Number</label>
+                                                <input type="text" name="phone" value="{{$single->phone}}" class="form-control" placeholder="example@mail.com">
+                                                <span class="error text-danger small" id="phone_error"></span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Location/Country (Placeholder) -->
+                                        <div class="col-md-6">
+                                            <div class="p-3 border rounded-3 bg-light-subtle">
+                                                <label class="text-muted small text-uppercase fw-bold mb-1 d-block">Image</label>
+                                                <div class="col-sm-12">
+                                                    <input type="file" name="image" class="form-control">
+                                                    <span class="error text-danger small" id="image_error"></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <hr class="text-light">
-
-                                    <!-- Email Row -->
-                                    <div class="row mb-3 align-items-center">
-                                        <label class="col-sm-3 col-form-label fw-bold text-secondary">Email</label>
-                                        <div class="col-sm-9">
-                                            <input type="email" name="email" value="{{$single->email}}" class="form-control" placeholder="example@mail.com">
-                                            <span class="error text-danger small" id="email_error"></span>
-                                        </div>
-                                    </div>
-
-                                    <hr class="text-light">
-
-                                    <!-- Phone Row -->
-                                    <div class="row mb-3 align-items-center">
-                                        <label class="col-sm-3 col-form-label fw-bold text-secondary">Phone</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" name="phone" value="{{$single->phone}}" class="form-control" placeholder="Phone number">
-                                            <span class="error text-danger small" id="phone_error"></span>
-                                        </div>
-                                    </div>
-
-                                    <hr class="text-light">
-
-                                    <!-- File Upload Row -->
-                                    <div class="row mb-4 align-items-center">
-                                        <label class="col-sm-3 col-form-label fw-bold text-secondary">Upload New Image</label>
-                                        <div class="col-sm-9">
-                                            <input type="file" name="image" class="form-control">
-                                            <span class="error text-danger small" id="image_error"></span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Action Buttons Row -->
-                                    <div class="row">
-                                        <div class="col-sm-9 offset-sm-3">
-                                            <button type="submit" class="btn btn-primary px-4 py-2 shadow-sm">
-                                                Update
-                                            </button>
-
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary px-4 py-2 shadow-sm">
+                                        Update
+                                    </button>
+                                </div>
                         </div>
+                        </form>
+
+
                     </div>
                 </div>
             </div>
@@ -128,10 +151,11 @@
             makeAjaxRequest(url, 'POST', formData, function(response) {
                     console.log(response);
                     $('#message').html(response.message);
+                    $('.error').hide();
                     setTimeout(function() {
                         window.location.href = "/profile";
                     }, 2000);
-                    
+
                 },
                 function(error) {
                     console.log('error : ', error);

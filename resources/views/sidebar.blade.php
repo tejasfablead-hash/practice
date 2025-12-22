@@ -25,4 +25,28 @@
             </li>
         </ul>
     </div>
+
+    <a href="#userSubmenu" 
+       data-bs-toggle="collapse" 
+       aria-expanded="{{ request()->routeIs('user.*') ? 'true' : 'false' }}" 
+       class="dropdown-toggle {{ request()->routeIs('user.*') ? '' : 'collapsed' }}">
+        <i class="bi bi-people"></i> Task 2
+    </a>
+
+     <div class="collapse {{ request()->routeIs('user.*') ? 'show' : '' }}" id="userSubmenu">
+        <ul class="nav flex-column ms-3">
+            <li class="nav-item">
+                <a href="{{route('multifield')}}" 
+                   class="nav-link {{ request()->routeIs('user.add') ? 'active' : '' }}">
+                    <i class="bi bi-person-plus"></i> Add multiple
+                </a>
+            </li>
+            <!-- <li class="nav-item">
+                <a href="{{route('view')}}" 
+                   class="nav-link {{ request()->routeIs('user.view') ? 'active' : '' }}">
+                    <i class="bi bi-list-columns-reverse"></i> All Users
+                </a>
+            </li> -->
+        </ul>
+    </div>
 </div>

@@ -1,5 +1,7 @@
 @extends('layout')
 @section('container')
+
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
 <div class="content">
 
     <div class="container-fluid py-4">
@@ -38,6 +40,7 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 <script src="{{ asset('ajax.js') }}"></script>
 <script>
     $(document).ready(function() {
@@ -85,25 +88,44 @@
             console.log('error : ', error);
         });
 
-        $(document).on('click', '.del-btn', function(e) {
 
+
+        $(document).on('click', '.del-btn', function(e) {
+            e.preventDefault();
             let id = $(this).data('id');
             let obj = $(this);
             var url = "/delete/" + id;
-            if (confirm("Are you sure you want to delete this record?")) {
-                makeAjaxRequest(url, 'GET', null, function(response) {
-                        console.log(response);
-                        $('#message').html(response.message);
-                        setTimeout(function() {
-                            $('#message').hide();
-                        }, 2000);
-                        $(obj).parent().parent().remove();
-                    },
-                    function(error) {
-                        console.log('error : ', error);
+
+            swal({
+                    title: "Are you sure?",
+                    text: "Once deleted, you will not be able to recover this imaginary file!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                     cancelButtonText: "No",
+                    confirmButtonText: "Yes",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+               function(id){
+                    if (id) {
+                        makeAjaxRequest(url, 'GET', null, function(response) {
+                                console.log(response);
+                                swal("Deleted!", "Your imaginary file has been archived.", "success");
+                                $('#message').html(response.message);
+                                setTimeout(function() {
+                                    $('#message').hide();
+                                }, 2000);
+                                $(obj).parent().parent().remove();
+                            },
+                            function(error) {
+                                console.log('error : ', error);
+                            }
+                        );
+                    } else {
+                        swal("Cancelled", "Your Record is safe.", "error");
                     }
-                );
-            }
+                });
         });
     });
 </script>
