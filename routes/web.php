@@ -34,6 +34,9 @@ Route::post('/update', [ManageController::class, 'updatedata'])->name('update');
 Route::get('/delete/{id}', [ManageController::class, 'delete'])->name('delete');
 
 
+Route::post('/csv-store', [ManageController::class, 'csvstore'])->name('csvstore');
+
+
 Route::get('/multifield', [MultipleController::class, 'multifield'])->name('multifield');
 Route::post('/add-multifield', [MultipleController::class, 'store'])->name('add-multifield');
 

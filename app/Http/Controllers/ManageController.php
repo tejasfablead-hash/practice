@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Symfony\Component\Console\Input\Input;
 
 class ManageController extends Controller
 {
@@ -37,7 +38,6 @@ class ManageController extends Controller
             return view('login');
         }
     }
-
 
     public function main()
     {
@@ -102,7 +102,6 @@ class ManageController extends Controller
         $single = emp::where('id', $id)->first();
         return view('update', ['single' => $single, 'country' => $country]);
     }
-
 
     public function updatedata(Request $request)
     {
@@ -176,5 +175,64 @@ class ManageController extends Controller
 
         // dd($city);
         return response()->json($city);
+    }
+    public function csvstore(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:csv,txt'
+        ]);
+
+        $file = $request->file('file');
+        $handle = fopen($file->getRealPath(), 'r');
+
+        fgetcsv($handle);
+
+        $errors = [];
+        $rowNumber = 1;
+
+        while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+            $rowNumber++;
+
+            $validator = Validator::make(
+                [
+                    'email' => $data[1],
+                ],
+                [
+                    'email' => 'email|unique:emp_tbl,email',
+                ]
+            );
+
+            if ($validator->fails()) {
+                $errors[] = [
+                    'row' => $rowNumber,
+                    'email' => $data[1],
+                    'error' => $validator->errors()->first('email') ,
+                ];
+                continue;
+            }
+
+            emp::create([
+                'name'    => $data[0],
+                'email'   => $data[1],
+                'city'    => $data[2],
+                'country' => $data[3],
+                'gender'  => $data[4],
+            ]);
+        }
+
+        fclose($handle);
+
+        if (!empty($errors)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Some rows failed validation',
+                'errors' => $errors
+            ], 422);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data Imported Successfully!'
+        ]);
     }
 }

@@ -58,7 +58,12 @@
                             <div class="row field_wrapper">
                                 <div class="col-6 mb-3">
                                     <label class="form-label">Country</label>
-                                    <input type="text" name="country" id="country" class="form-control">
+                                    <select class="form-select" name="country" id="country">
+                                        <option value="">Select...</option>
+                                        @foreach($country as $item)
+                                        <option value="{{$item->id}}">{{$item->country_name}}</option>
+                                        @endforeach
+                                    </select>
                                     <span class="text-danger small error" id="country_error"></span>
                                 </div>
                                 <!-- Email Input -->
@@ -71,7 +76,9 @@
                             <div class="row field_wrapper">
                                 <div class="col-6 mb-3">
                                     <label class="form-label">City</label>
-                                    <input type="text" name="city" id="city" class="form-control">
+                                    <select class="form-select" name="city" id="city">
+                                        <option value="">Select City...</option>
+                                    </select>
                                     <span class="text-danger small error" id="city_error"></span>
                                 </div>
                                 <!-- Email Input -->
@@ -131,6 +138,29 @@
     <script src="{{ asset('ajax.js') }}"></script>
     <script>
         $(document).ready(function() {
+
+            $('#country').on('change', function() {
+
+                var country_id = $(this).val();
+                if (country_id) {
+                    $.ajax({
+                        url: '{{url("/getcity/")}}/' + country_id,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(response) {
+                            $('#city').empty();
+                            console.log('city', response);
+                            $.each(response, function(key, value) {
+                                $('#city').append('<option value="' + key + '">' + value + '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('#city').empty().append('<option value=" "> select city </option>');
+
+                }
+            });
+
 
             let step = 1;
 

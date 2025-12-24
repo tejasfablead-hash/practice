@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('phone')->nullable()->after('password');
-            $table->string('image')->nullable()->after('phone');
+           $table->bigInteger('city')->after('country');
+           $table->foreignId('city')
+      ->constrained('city_tbl') 
+      ->cascadeOnDelete();
         });
     }
 
