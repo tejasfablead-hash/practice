@@ -16,8 +16,8 @@ function makeAjaxRequest(url, method, data, successCallback, errorCallback) {
         },
         error: function (xhr, status, error) {
             console.error("AJAX Error:", error);
+            $(".error").empty();
             if (errorCallback) errorCallback(xhr, status, error);
-               $(".error").empty();
                     if (xhr.status === 422) {
                         $(".error").addClass("text-danger");
                         let errors = xhr.responseJSON.errors;

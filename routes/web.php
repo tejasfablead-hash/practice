@@ -35,6 +35,8 @@ Route::get('/delete/{id}', [ManageController::class, 'delete'])->name('delete');
 
 
 Route::get('/multifield', [MultipleController::class, 'multifield'])->name('multifield');
+Route::post('/add-multifield', [MultipleController::class, 'store'])->name('add-multifield');
 
+Route::get('/inputmultifield', [MultipleController::class, 'inputmultifield'])->name('inputmultifield');
 
 
