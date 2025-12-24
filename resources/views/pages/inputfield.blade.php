@@ -26,27 +26,26 @@
                     <form id="submitform" enctype="multipart/form-data">
                         @csrf
                         <!-- Basic Input -->
-
                         <div class="field_wrap">
                             <div class="row">
                                 <div class="col-md-5 mb-3">
                                     <label class="form-label">Product</label>
-                                    <input type="text" name="product" id="product" class="form-control product">
+                                    <input type="text" name="product[]" class="form-control product">
                                     <span class="text-danger small producterror" id="product_error"></span>
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label class="form-label">Qty</label>
-                                    <input type="number" name="qty" id="qty" class="form-control qty">
+                                    <input type="number" name="qty[]" class="form-control qty">
                                     <span class="text-danger small qtyerror" id="qty_error"></span>
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label class="form-label">Price</label>
-                                    <input type="text" name="price" id="price" class="form-control price">
+                                    <input type="text" name="price[]" class="form-control price">
                                     <span class="text-danger small priceerror" id="price_error"></span>
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label class="form-label">Total</label>
-                                    <input type="text" name="total" id="total" class="form-control total">
+                                    <input type="text" name="total[]" class="form-control total" readonly>
                                     <span class="text-danger small totalerror" id="total_error"></span>
                                 </div>
                                 <div class="col-md-1">
@@ -74,18 +73,18 @@
     <script src="{{ asset('ajax.js') }}"></script>
     <script>
         $(document).ready(function() {
-            cal();
-
-            function cal() {
-                var qty = $('#qty').val();
-                var price = $('#price').val();
-                var total = qty * price;
-                $('#total').val(total);
+         
+            function calculateRow(row) {
+                let qty = parseFloat(row.find('.qty').val()) || 0;
+                let price = parseFloat(row.find('.price').val()) || 0;
+                row.find('.total').val(qty * price);
             }
 
-            $('.qty, .price').on('input change', function() {
-                cal();
+            $(document).on('input', '.qty, .price', function() {
+                let row = $(this).closest('.row');
+                calculateRow(row);
             });
+
 
             var x = 1;
             var max = 10;
@@ -122,7 +121,7 @@
                     let Isvalue = true;
                     if ($('.product').val() === '') {
                         $('.producterror').text('Product is required');
-                         Isvalue = false;
+                        Isvalue = false;
                     } else {
                         $('.producterror').text('');
                     }
@@ -134,34 +133,34 @@
                     }
                     if ($('.price').val() === '') {
                         $('.priceerror').text('Price is required');
-                      Isvalue = false;
+                        Isvalue = false;
                     } else {
                         $('.priceerror').text('');
                     }
 
-                    if(!Isvalue){
+                    if (!Isvalue) {
                         return;
                     }
 
-                       let valid = true;
-                       let lastRow = $('.remove').last();
+                    let valid = true;
+                    let lastRow = $('.remove').last();
 
-                     lastRow.find('.product, .qty, .price').each(function () {
-                            if ($(this).val().trim() === '') {
-                              let fieldName = $(this).attr('id'); 
-                                            $(this).next('span').text(fieldName + ' is required');
-                                valid = false;
-                                cal(); 
-                            } else {
-                                $(this).next('span').text('');
-                            }
-                        });
+                    lastRow.find('.product, .qty, .price').each(function() {
+                        if ($(this).val().trim() === '') {
+                            let fieldName = $(this).attr('id');
+                            $(this).next('span').text(fieldName + ' is required');
+                            valid = false;
+                            cal();
+                        } else {
+                            $(this).next('span').text('');
+                        }
+                    });
 
-                if (!valid) return;
+                    if (!valid) return;
 
                     x++;
                     $(wrap).append(field);
-                    
+
 
                 } else {
                     alert('A maximum of ' + max + ' fields are allowed to be added. ');
