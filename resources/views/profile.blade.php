@@ -22,10 +22,14 @@
                             <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 1.25rem;">
                                 <!-- Decorative Top Banner -->
                                 <div class="bg-primary" style="height: 100px; background: linear-gradient(45deg, #4e73df 0%, #224abe 100%);"></div>
-
+                                <!-- @if($data->image)
+                                $imagepth = $data->image;
+                                @else
+                                $imagepth = 1766063076.png;
+                                @endif -->
                                 <div class="card-body text-center pt-0">
                                     <div class="mt-n5 position-relative">
-                                        <img src="{{asset('/storage/user/'.$data->image)}}"
+                                        <img src="{{asset('/storage/user/'. $data->image)}}"
                                             alt="avatar"
                                             class="rounded-circle img-fluid border border-4 border-white shadow-sm"
                                             style="width: 120px; height: 120px; object-fit: cover; margin-top: -60px;">

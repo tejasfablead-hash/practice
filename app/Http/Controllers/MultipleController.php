@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bank;
 use App\Models\COUNTRY;
 use App\Models\Information;
 use App\Models\User;
@@ -16,7 +17,7 @@ class MultipleController extends Controller
     {
         if (Auth::check()) {
             $country = COUNTRY::all();
-            return view('pages.multiple',compact('country'));
+            return view('pages.multiple', compact('country'));
         } else {
             return view('login');
         }
@@ -24,7 +25,6 @@ class MultipleController extends Controller
     public function inputmultifield()
     {
         if (Auth::check()) {
-
             return view('pages.inputfield');
         } else {
             return view('login');
@@ -33,17 +33,22 @@ class MultipleController extends Controller
 
     public function store(Request $request)
     {
+        
         if (Auth::check()) {
             $validate = Validator::make($request->all(), [
                 'fname' => 'required|alpha',
                 'lname' => 'required|alpha',
                 'dob' => 'required|date',
                 'phone' => 'required|digits:10|numeric',
-                'country' => 'required|alpha',
-                'state' => 'required|alpha',
-                'city' => 'required|alpha',
+                'country' => 'required',
+                'state' => 'required',
+                'city' => 'required',
                 'pincode' => 'required|numeric',
-                'email' => 'required|email|unique:information_tbl,email',
+                'bankname'=>'required',
+                'branchname'=>'required',
+                'ifsc'=>'required',
+                'balance'=>'required',
+                'email' => 'required|email|unique:users,email',
                 'password' => 'required|confirmed|min:6'
             ]);
 
@@ -53,17 +58,25 @@ class MultipleController extends Controller
                     'errors' => $validate->errors()
                 ], 422);
             }
-
-            User::create([
-                'name' => $request->fname,$request->lname,
-                'dob' => $request->dob,
-                'phone' => $request->phone,
-                'country' => $request->country,
-                'state' => $request->state,
-                'city' => $request->city,
-                'pincode' => $request->pincode,
+            $name = $request->fname . '' . $request->lname;
+               $data = User::create([
+                'name' => $name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'dob' => $request->dob,
+                'phone' => $request->phone,
+                'city' => $request->city,
+                'country' => $request->country,
+                'state' => $request->state,
+                'pincode' => $request->pincode,
+            ]);
+
+            Bank::create([
+                'user' =>$data->id,
+                'bank_name'=>$request->bankname,
+                'branch_name'=>$request->branchname,
+                'ifsc'=>$request->ifsc,
+                'balance'=>$request->balance
             ]);
             return response()->json([
                 'status' => true,

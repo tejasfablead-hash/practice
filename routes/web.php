@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\ManageController;
 use App\Http\Controllers\MultipleController;
 use Illuminate\Support\Facades\Route;
