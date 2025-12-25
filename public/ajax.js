@@ -15,7 +15,6 @@ function makeAjaxRequest(url, method, data, successCallback, errorCallback) {
             if (successCallback) successCallback(response);
         },
         error: function (xhr, status, error) {
-            console.error("AJAX Error:", error);
             $(".error").empty();
             if (errorCallback) errorCallback(xhr, status, error);
                     if (xhr.status === 422) {

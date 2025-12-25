@@ -146,7 +146,6 @@
                     setTimeout(function() {
                         window.location.href = "/view";
                     }, 2000);
-                    
                 },
                 function(error) {
                     console.log('error : ', error);
