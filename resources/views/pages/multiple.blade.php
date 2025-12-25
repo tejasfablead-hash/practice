@@ -1,7 +1,64 @@
 @extends('layout')
 @section('container')
 <style>
+    #progressbar {
+        margin-bottom: 30px;
+        overflow: hidden;
+        counter-reset: step;
+        display: flex;
+        justify-content: space-between;
+        padding-left: 0;
+    }
 
+    #progressbar li {
+        list-style-type: none;
+        width: 25%;
+        position: relative;
+        text-align: center;
+        font-weight: 500;
+        color: #6c757d;
+    }
+
+    #progressbar li:before {
+        content: counter(step);
+        counter-increment: step;
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+        display: block;
+        background: #dee2e6;
+        border-radius: 50%;
+        margin: 0 auto 10px auto;
+        color: #000;
+    }
+
+    #progressbar li:after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 3px;
+        background: #dee2e6;
+        top: 16px;
+        left: -50%;
+        z-index: -1;
+    }
+
+    #progressbar li:first-child:after {
+        content: none;
+    }
+
+    #progressbar li.active {
+        color: #198754;
+    }
+
+    #progressbar li.active:before {
+        background: #198754;
+        color: white;
+    }
+
+    #progressbar li.active+li:after {
+        background: #198754;
+    }
 </style>
 <div class="content">
     <div class="m-3">
@@ -19,13 +76,18 @@
             <div id="message" class="text-success"></div>
             <div class="row justify-content-center">
                 <div class="col-md-12 border p-4 shadow-sm rounded bg-white">
-                    <h3 class="mb-4 text-center ">Fill all Input field to go to next step</h3>
-
-                    <!-- Success Message Alert -->
+                    <!-- <h3 class="mb-4 text-center ">Fill all Input field and go to next step</h3> -->
 
                     <form id="submitform" enctype="multipart/form-data">
+
+                        <ul id="progressbar" class="mb-4">
+                            <li class="active" id="account"><strong>Account</strong></li>
+                            <li id="personal"><strong>Address</strong></li>
+                            <li id="payment"><strong>Payment</strong></li>
+                            <li id="confirm"><strong>Finish</strong></li>
+                        </ul>
+
                         @csrf
-                        <!-- Basic Input -->
                         <div id="first">
                             <div class="row field_wrapper">
                                 <div class="col-6 mb-3">
@@ -33,7 +95,6 @@
                                     <input type="text" name="fname" id="fname" class="form-control">
                                     <span class="text-danger small error" id="fname_error"></span>
                                 </div>
-                                <!-- Email Input -->
                                 <div class="col-6 mb-3">
                                     <label class="form-label">Last Name</label>
                                     <input type="text" name="lname" id="lname" class="form-control">
@@ -46,7 +107,6 @@
                                     <input type="date" name="dob" id="dob" class="form-control">
                                     <span class="text-danger small error" id="dob_error"></span>
                                 </div>
-                                <!-- Email Input -->
                                 <div class="col-6 mb-3">
                                     <label class="form-label">Phone</label>
                                     <input type="text" name="phone" id="phone" class="form-control">
@@ -66,7 +126,6 @@
                                     </select>
                                     <span class="text-danger small error" id="country_error"></span>
                                 </div>
-                                <!-- Email Input -->
                                 <div class="col-6 mb-3">
                                     <label class="form-label">State</label>
                                     <input type="text" name="state" id="state" class="form-control">
@@ -81,7 +140,6 @@
                                     </select>
                                     <span class="text-danger small error" id="city_error"></span>
                                 </div>
-                                <!-- Email Input -->
                                 <div class="col-6 mb-3">
                                     <label class="form-label">PinCode</label>
                                     <input type="text" name="pincode" id="pincode" class="form-control">
@@ -92,11 +150,36 @@
                         <div id="third" class="d-none">
                             <div class="row field_wrapper">
                                 <div class="col-6 mb-3">
+                                    <label class="form-label">Bank Name</label>
+                                    <input type="text" name="bankname" id="bankname" class="form-control">
+                                    <span class="text-danger small error" id="bankname_error"></span>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <label class="form-label">Branch Name</label>
+                                    <input type="text" name="branchname" id="branchname" class="form-control">
+                                    <span class="text-danger small error" id="branchname_error"></span>
+                                </div>
+                            </div>
+                            <div class="row field_wrapper">
+                                <div class="col-6 mb-3">
+                                    <label class="form-label">IFSC</label>
+                                    <input type="text" name="ifsc" id="ifsc" class="form-control">
+                                    <span class="text-danger small error" id="ifsc_error"></span>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <label class="form-label">Balance</label>
+                                    <input type="text" name="balance" id="balance" class="form-control">
+                                    <span class="text-danger small error" id="balance_error"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="fourth" class="d-none">
+                            <div class="row field_wrapper">
+                                <div class="col-6 mb-3">
                                     <label class="form-label">Email</label>
                                     <input type="email" name="email" id="email" class="form-control">
                                     <span class="text-danger small error" id="email_error"></span>
                                 </div>
-                                <!-- Email Input -->
                                 <div class="col-6 mb-3">
                                     <label class="form-label">Password</label>
                                     <input type="password" name="password" id="password" class="form-control">
@@ -138,6 +221,8 @@
     <script src="{{ asset('ajax.js') }}"></script>
     <script>
         $(document).ready(function() {
+            const steps = ['account', 'personal', 'payment', 'confirm'];
+
 
             $('#country').on('change', function() {
 
@@ -161,132 +246,58 @@
                 }
             });
 
-
             let step = 1;
+            showStep(step);
 
             function showStep(step) {
-                $('#first, #second, #third').addClass('d-none');
+                $('#first, #second, #third, #fourth').addClass('d-none');
+
+                $('#prevBtn').toggleClass('d-none', step === 1);
+                $('#nextBtn').toggleClass('d-none', step === 4);
+                $('#submitBtn').toggleClass('d-none', step !== 4);
+
+                if (step === 1) $('#first').removeClass('d-none');
+                if (step === 2) $('#second').removeClass('d-none');
+                if (step === 3) $('#third').removeClass('d-none');
+                if (step === 4) $('#fourth').removeClass('d-none');
 
 
-                if (step === 1) {
-                    $('#first').removeClass('d-none');
-                    $('#prevBtn').addClass('d-none');
-                    $('#submitBtn').addClass('d-none');
-                    $('#nextBtn').removeClass('d-none');
-                }
+                updateStepBar(step);
+            }
 
-                if (step === 2) {
-                    $('#second').removeClass('d-none');
-                    $('#prevBtn').removeClass('d-none');
-                    $('#submitBtn').addClass('d-none');
-                    $('#nextBtn').removeClass('d-none');
-                }
+            function updateStepBar(step) {
+                $('#progressbar li').removeClass('active');
 
-                if (step === 3) {
-                    $('#third').removeClass('d-none');
-                    $('#prevBtn').removeClass('d-none');
-                    $('#nextBtn').addClass('d-none');
-                    $('#submitBtn').removeClass('d-none');
+                for (let i = 0; i < step; i++) {
+                    $('#' + steps[i]).addClass('active');
                 }
             }
 
 
+
             $('#nextBtn').click(function() {
 
-                if (step === 1 && $('#first')) {
-                    if ($('#fname').val() === '') {
-                        $('#fname_error').text('* First name is required');
-                        return;
-                    } else {
-                        $('#fname_error').text('');
-                    }
-                } else {
-                    $('#fname_error').text('');
-                    $('#lname_error').text('');
-                    $('#phone_error').text('');
+                $('.error').text('');
+
+                if (step === 1) {
+                    if (!$('#fname').val()) return $('#fname_error').text('* First name required');
+                    if (!$('#lname').val()) return $('#lname_error').text('* Last name required');
+                    if (!$('#phone').val()) return $('#phone_error').text('* Phone required');
                 }
-                if (step === 1 && $('#lname').val() === '') {
-                    if ($('#lname').val() === '') {
-                        $('#lname_error').text('* Last name is required');
-                        return;
-                    } else {
-                        $('#lname_error').text('');
-                    }
-                } else {
-                    $('#fname_error').text('');
-                    $('#lname_error').text('');
-                    $('#phone_error').text('');
+
+                if (step === 2) {
+                    if (!$('#country').val()) return $('#country_error').text('* Country required');
+                    if (!$('#state').val()) return $('#state_error').text('* State required');
+                    if (!$('#city').val()) return $('#city_error').text('* City required');
                 }
-                if (step === 1 && $('#phone').val() === '') {
-                    if ($('#phone').val() === '') {
-                        $('#phone_error').text('* phone is required');
-                        return;
-                    } else {
-                        $('#phone_error').text('');
-                    }
-                } else {
-                    $('#fname_error').text('');
-                    $('#lname_error').text('');
-                    $('#phone_error').text('');
+
+                if (step === 3) {
+                    if (!$('#bankname').val()) return $('#bankname_error').text('* Bank name required');
+                    if (!$('#branchname').val()) return $('#branchname_error').text('* Branch required');
+                    if (!$('#ifsc').val()) return $('#ifsc_error').text('* IFSC required');
+                    if (!$('#balance').val()) return $('#balance_error').text('* Balance required');
                 }
-                if (step === 2 && $('#second')) {
-                    if ($('#country').val() === '') {
-                        $('#country_error').text('* Country is required');
-                        return;
-                    } else {
-                        $('#country_error').text('');
-                    }
-                } else {
-                    $('#country_error').text('');
-                    $('#city_error').text('');
-                    $('#state_error').text('');
-                }
-                if (step === 2 && $('#state').val() === '') {
-                    if ($('#state').val() === '') {
-                        $('#state_error').text('* State is required');
-                        return;
-                    } else {
-                        $('#state_error').text('');
-                    }
-                } else {
-                    $('#country_error').text('');
-                    $('#city_error').text('');
-                    $('#state_error').text('');
-                }
-                if (step === 2 && $('#city').val() === '') {
-                    if ($('#city').val() === '') {
-                        $('#city_error').text('* City is required');
-                        return;
-                    } else {
-                        $('#city_error').text('');
-                    }
-                } else {
-                    $('#country_error').text('');
-                    $('#city_error').text('');
-                    $('#state_error').text('');
-                }
-                if (step === 3 && $('#third')) {
-                    if ($('#email').val() === '') {
-                        $('#email_error').text('* Email is required');
-                        return;
-                    } else {
-                        $('#email_error').text('');
-                    }
-                } else {
-                    $('#email_error').text('');
-                    $('#password_error').text('');
-                }
-                if (step === 3 && $('#password').val() === '') {
-                    if ($('#password').val() === '') {
-                        $('#password_error').text('* Password is required');
-                        return;
-                    } else {
-                        $('#password_error').text('');
-                    }
-                } else {
-                    $('#email_error').text('');
-                    $('#password_error').text('');
-                }
+
                 step++;
                 showStep(step);
             });

@@ -16,12 +16,18 @@ return new class extends Migration
             $table->string('role')->after('dob');
             $table->string('phone')->after('role');
             $table->string('image')->after('remember_token');
-            $table->bigInteger('city')->after('phone');
-            $table->bigInteger('country')->after('city');
+            $table->unsignedBigInteger('city')->after('phone');
+            $table->unsignedBigInteger('country')->after('city');
             $table->string('state')->after('country');
             $table->string('pincode')->after('state');
-            $table->foreign('city')->references('id')->on('city_tbl')->onDelete('cascade');
-            $table->foreign('country')->references('id')->on('country_tbl')->onDelete('cascade');
+            $table->foreign('city')
+                ->references('id')
+                ->on('city_tbl')
+                ->onDelete('cascade');
+            $table->foreign('country')
+                ->references('id')
+                ->on('country_tbl')
+                ->onDelete('cascade');
         });
     }
 
