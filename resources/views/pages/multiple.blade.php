@@ -19,7 +19,7 @@
             <div id="message" class="text-success"></div>
             <div class="row justify-content-center">
                 <div class="col-md-12 border p-4 shadow-sm rounded bg-white">
-                    <h3 class="mb-4 ">Add Data</h3>
+                    <h3 class="mb-4 text-center ">Fill all Input field to go to next step</h3>
 
                     <!-- Success Message Alert -->
 
