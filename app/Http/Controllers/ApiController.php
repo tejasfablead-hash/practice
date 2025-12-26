@@ -42,7 +42,6 @@ class ApiController extends Controller
 
     public function login(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|min:4'
@@ -55,25 +54,26 @@ class ApiController extends Controller
             ], 422);
         }
 
-        $credentials =  $request->only('email', 'password');
+        $user = User::where('email', $request->email)->first();
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-
-            $tokenName = $request->token_name ?? 'auth_token';
-            $token = $user->createToken($tokenName);
-
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'status' => true,
-                'message' => 'Login successfully',
-                'token' => $token->plainTextToken,
-            ], 200);
+                'status' => false,
+                'message' => 'Invalid credentials'
+            ], 401);
         }
+
+        $user->tokens()->delete();
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
-            'status' => false,
-            'message' => 'Invalid Credentials'
-        ], 401);
+            'status' => true,
+            'message' => 'Login successful',
+            'token' => $token,
+        ]);
     }
+
 
     public function view()
     {
@@ -85,26 +85,23 @@ class ApiController extends Controller
         ], 200);
     }
 
-    public function edit($id)
+    public function update(Request $request)
     {
-        $data = User::where('id', $id)->first();
-        dd($data);
-        return response()->json([
-            'status' => true,
-            'data' => $data
-        ], 200);
-    }
+        $data = $request->user();
 
-    public function update(Request $request,$id)
-    {
-        $data = User::where('id', $id)->first();
+        if (!$data) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthenticated'
+            ], 401);
+        }
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users')->ignore($data->id)
+                Rule::unique('users')->ignore($data->id),
             ],
             'password' => 'required|min:4',
             'role' => 'required|in:1,2',
@@ -117,7 +114,7 @@ class ApiController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-        $user=$data->update([
+        $user = $data->update([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -127,18 +124,16 @@ class ApiController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Record Updated Successfully',
-            'data'=>$user
-        ], 200);
-    }
-public function delete($id)
-    {
-        $user = User::where('id', $id)->first();
-        $data=$user->delete();
-        return response()->json([
-            'status' => true,
-            'user'=>$data,
-            'message' => 'Record Deleted Successfully',
+            'data' => $user
         ], 200);
     }
 
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'Logged out successfully',
+        ]);
+    }
 }
