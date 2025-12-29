@@ -21,6 +21,6 @@ Route::post('user/update-user', [ApiController::class, 'update']);
 Route::post('product/store', [ProductController::class, 'store']);
 Route::post('product/update/{id}', [ProductController::class, 'update']);
 Route::post('product/delete', [ProductController::class, 'delete']);
-Route::post('product/view-product', [ApiController::class, 'view']);
+Route::post('product/view-product', [ProductController::class, 'view']);
 
 });

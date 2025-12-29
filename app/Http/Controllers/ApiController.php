@@ -36,7 +36,7 @@ class ApiController extends Controller
         ]);
         return response()->json([
             'status' => true,
-            'message' => 'Record Inserted Successfully'
+            'message' => 'Registration Successfully'
         ], 200);
     }
 
@@ -69,7 +69,7 @@ class ApiController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Login successful',
+            'message' => 'Login successfully',
             'token' => $token,
         ]);
     }
