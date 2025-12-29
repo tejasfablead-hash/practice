@@ -11,6 +11,10 @@ class Product extends Model
         'name',
         'description',
         'qty',
-        'price'
+        'price',
+        'image'
+    ];
+    protected $casts= [
+        'image'=>'array',
     ];
 }
